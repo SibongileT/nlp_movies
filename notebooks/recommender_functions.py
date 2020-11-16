@@ -34,39 +34,38 @@ def movie_recommendations(sparse_mat,df,title):
 def book_recommendations(sparse_mat,df,title):
 
 
-    books = df[movie_book_df2['isMovie']==0]['title']
+    books = df[df['isMovie']==0]['title']
     #Reverse mapping of the index
-    indices = pd.Series(df2.index, index = df['title'])
+    indices = pd.Series(df.index, index = df['title'])
     idx = indices[title]
 
 
     result = pd.DataFrame(sparse_mat[:,idx].toarray()).sort_values(by=0,ascending=False).index
-    book_indices  = [score for score in result if movie_book_df2.iloc[score]['isMovie']==0]
-    book_indices = movie_indices[0:5]
+    book_indices  = [score for score in result if df.iloc[score]['isMovie']==0]
+    book_indices = book_indices[0:5]
 
-    print(movie_indices)
     recommend = books.loc[book_indices]
     return recommend,book_indices,idx
 
-def get_vectors(x,model):
 
-    global word_embeddings
-    word_embeddings = []
+def word2vec_recommendations(title,df,cosine_similarities):
 
-    # Reading the each book description
-    for line in x:
-        avgword2vec = None
-        count = 0
-        for word in line.split():
-            #print(word)
-            if word in model:
-                count += 1
-                if avgword2vec is None:
-                    avgword2vec = model[word]
-                else:
-                    avgword2vec = avgword2vec + model[word]
 
-        if avgword2vec is not None:
-            avgword2vec = avgword2vec / count
 
-            word_embeddings.append(avgword2vec)
+    # taking the title and book image link and store in new data frame called books
+    movies = df[df['isMovie']==1][['title','author/director','release_date']]
+    #books = movie_book_df['title']
+    #Reverse mapping of the index
+    indices = pd.Series(df.index, index = df['title'])
+    print(len(indices))
+
+    idx = indices[title]
+    sim_scores = list(enumerate(cosine_similarities[idx]))
+    sim_scores = sorted(sim_scores, key = lambda x: x[1], reverse = True)
+    sim_scores  = [score for score in sim_scores if df.iloc[score[0]]['isMovie']==1]
+    sim_scores = sim_scores[1:6]
+    print(sim_scores)
+    movie_indices = [i[0] for i in sim_scores]
+    print(movie_indices)
+    recommend = movies.iloc[movie_indices]
+    return recommend

@@ -45,19 +45,15 @@ if add_radio=='Movie':
     st.markdown(page_bg_img,unsafe_allow_html=True)
 
     @st.cache
-    def recommendations(title,num):
-        # finding cosine similarity for the vectors
-        #cosine_similarities = cosine_similarity(tf_result,tf_result)
-        # taking the title and book image link and store in new data frame called books
+    def movie_recommendations(title,num):
+        '''
+        Return a movie based on a book the user inputs
+        title: title of the book the user enters
+        num: Number of movies users wants returned
+        '''
         movies = movie_book_df[movie_book_df['isMovie']==1][['title','author/director','release_date']]
-        #books = movie_book_df['title']
-        #Reverse mapping of the index
         indices = pd.Series(movie_book_df.index, index = movie_book_df['title'])
         idx = indices[title]
-
-        #sim_scores = list(enumerate(cosine_similarities[idx]))
-
-
         result = pd.DataFrame(sparse_mat[:,idx].toarray()).sort_values(by=0,ascending=False).head(20).index
         movie_indices  = [score for score in result if movie_book_df.iloc[score]['isMovie']==1]
         movie_indices = movie_indices[0:num]
@@ -71,7 +67,7 @@ if add_radio=='Movie':
         return pd.DataFrame(list(zip(sim_movies, directors,release_date)),columns=['Movie','Director','Release Date']),movie_indices,idx
 
     num = st.sidebar.slider("set value", min_value=1, value=5, max_value=10)
-    df,movie_indices,title_idx = recommendations(title.lower(),num)
+    df,movie_indices,title_idx = movie_recommendations(title.lower(),num)
     option1, option2, usertext1 = False, False, "default_text"
     if st.button("submit"):
         option1 = True
@@ -90,8 +86,12 @@ if add_radio=='Book':
     st.markdown(page_bg_img,unsafe_allow_html=True)
 
     @st.cache
-    def recommendations(title,num):
-
+    def book_recommendations(title,num):
+        '''
+        Return books based on a movie the user inputs
+        title: title of the book the user enters
+        num: Number of books users wants returned
+        '''
         movies = movie_book_df[movie_book_df['isMovie']==0][['title','author/director']]
 
         #Reverse mapping of the index
@@ -112,6 +112,6 @@ if add_radio=='Book':
         return pd.DataFrame(list(zip(sim_movies, directors)),columns=['Book','Author']),movie_indices,idx
 
     num = st.sidebar.slider("set value", min_value=1, value=5, max_value=10)
-    df,movie_indices,title_idx = recommendations(title,num)
+    df,movie_indices,title_idx = book_recommendations(title,num)
     if st.button("submit"):
         st.table(df)
