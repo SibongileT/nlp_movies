@@ -1,7 +1,7 @@
 # Book to Movie Recommender System
 ### Problem Statement
 * Create a recommender system that allows a user to find movies similar to a book that they liked or books based on a movie that they enjoyed.
-
+---
 ### Repo
 [**Notebooks**](https://github.com/SibongileT/nlp_movies/tree/main/notebooks)
 * **BookEDA** - Exploratory Analysis of the book data.
@@ -20,7 +20,7 @@
 [**Streamlit**](https://github.com/SibongileT/nlp_movies/tree/main/streamlit)
 * **streamlit_app** - Recommender application
 
-
+----
 
 ### Data and Tools
 * IMDb Movies 1960-2020
@@ -30,6 +30,8 @@
 * Genism
 * BeautifulSoup
 * IMDbpy
+
+---
 
 ## Results
 * [Recommender system](https://github.com/SibongileT/nlp_movies/tree/main/streamlit) soon to be deployed to heroku.
